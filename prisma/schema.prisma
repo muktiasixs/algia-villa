@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String   // Hashed password
+  role      String   @default("user") // "user" or "admin"
+  avatar    String?  // URL to avatar
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  bookings  Booking[]
+  reviews   Review[]
+}
+
+model Villa {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  location      String   // Puncak, Cileteuh, Bali
+  pricePerNight Int
+  discountPrice Int?
+  capacity      Int
+  bedrooms      Int
+  imageUrl      String
+  latitude      Float
+  longitude     Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  bookings      Booking[]
+  reviews       Review[]
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  userId      String
+  villaId     String
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("pending") // "confirmed", "cancelled"
+  totalPrice  Int
+  hasReviewed Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+  villa       Villa    @relation(fields: [villaId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  villaId   String
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  villa     Villa    @relation(fields: [villaId], references: [id])
+}

@@ -33,7 +33,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <FilterBar filterLocation={filterLocation} setFilterLocation={setFilterLocation} />
 
             <div className="max-w-7xl mx-auto px-6 py-12 flex-grow">
-                <div className="space-y-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {filteredVillas.map(villa => (
                         <Link
                             to={`/villas/${villa.id}`}
